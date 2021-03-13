@@ -1,0 +1,5 @@
+# protect the password
+initMongo.js
+
+# protect the data
+data/
