@@ -8,8 +8,10 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import { createRef, useState } from "react";
+import { useUser } from '../lib/hooks';
 
 export default function LoginOrSignup() {
+    useUser({ redirectTo: '/', redirectIfFound: true })
 
     // state setup
     const emailInput = createRef();
@@ -24,15 +26,12 @@ export default function LoginOrSignup() {
 
         // get the fields
         const email: string = emailInput.current.value;
-        // const password: string = passwordInput.current.value;
 
         try {
             setIsLoading(true);
 
             const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY);
             const didToken = await magic.auth.loginWithMagicLink({ email });
-
-            console.log(didToken);
 
             const response = await fetch("/api/login", {
                 "method": "POST",
@@ -44,13 +43,12 @@ export default function LoginOrSignup() {
                 },
                 "body": JSON.stringify({ email })
             })
-            console.log("Response");
-            console.log(response);
 
             // check if there was an error
             if (response.status !== 200) throw Error(`Something went wrong with the status '${response.status}' with this response`);
 
-            // Router.push("/");
+            console.log("Redirect");
+            Router.push("/");
         } catch (err) {
             console.error(err);
         } finally {

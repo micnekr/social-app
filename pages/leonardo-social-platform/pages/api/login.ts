@@ -2,11 +2,24 @@ import { magic } from "../../lib/magic";
 import { createSession } from "../../lib/auth-cookies";
 import { createHandlers } from "../../lib/rest-utils";
 
+import { connectToDatabase, User } from "../../lib/mongodbUtils";
+
 import type { NextApiRequest, NextApiResponse } from "next";
+
+import { randomBytes } from "crypto";
+
+async function createUser(email) {
+  const user = new User({ email });
+  return await user.save();
+}
+
+async function getUser(email) {
+  const user = await User.find({ email });
+  return user.length === 0 ? null : user;
+}
 
 const handlers = {
   POST: async (req, res) => {
-    console.log("login request");
     if (!req.headers.authorization)
       return res.status(400).json({ message: "Invalid login headers" });
     const didToken = magic.utils.parseAuthorizationHeader(
@@ -16,13 +29,12 @@ const handlers = {
     magic.token.validate(didToken);
     const { email, issuer } = await magic.users.getMetadataByToken(didToken);
 
-    console.log({ email, issuer });
-
+    await connectToDatabase();
     // We auto-detect signups if `getUserByEmail` resolves to `undefined`
-    // const user =
-    //   (await userModel.getUserByEmail(email)) ??
-    //   (await userModel.createUser(email));
-    // const token = await userModel.obtainFaunaDBToken(user);
+    const user = (await getUser(email)) || (await createUser(email));
+
+    // random token
+    const token = randomBytes(48).toString("base64");
 
     await createSession(res, { token, email, issuer });
 

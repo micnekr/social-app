@@ -7,7 +7,19 @@ import Button from 'react-bootstrap/Button';
 
 import Link from 'next/link'
 
+import useSWR from "swr";
+
+const fetcher = (url) =>
+  fetch(url)
+    .then((r) => r.json())
+    .then((data) => {
+      return { user: data?.user || null };
+    });
+
 function MyApp({ Component, pageProps }) {
+
+  const { data, error } = useSWR("/api/getUserData", fetcher);
+
   return <>
     <Navbar bg="dark" variant="dark">
       <Link href={"/"} passHref>
@@ -18,8 +30,8 @@ function MyApp({ Component, pageProps }) {
           <Nav.Link>Home</Nav.Link>
         </Link>
       </Nav>
-      <Link href={"/login"} passHref>
-        <Button variant="outline-info">Log in</Button>
+      <Link href={data?.user ? "/" : "/login"} passHref>
+        <Button variant="outline-info">{data?.user ? "To main page" : "Log in"}</Button>
       </Link>
     </Navbar>
     <div className="container mainContainer">
@@ -28,6 +40,7 @@ function MyApp({ Component, pageProps }) {
         <Component {...pageProps} />
       </div>
     </div>
+    <footer className="footer"><h1>Footer</h1></footer>
   </>
 }
 
