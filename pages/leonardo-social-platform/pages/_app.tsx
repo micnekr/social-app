@@ -18,7 +18,9 @@ const fetcher = (url) =>
 
 function MyApp({ Component, pageProps }) {
 
-  const { data, error } = useSWR("/api/getUserData", fetcher);
+  const { data, mutate } = useSWR("/api/getUserData", fetcher);
+
+  pageProps.getUserDataMutate = mutate;
 
   return <>
     <Navbar bg="dark" variant="dark">
@@ -30,8 +32,8 @@ function MyApp({ Component, pageProps }) {
           <Nav.Link>Home</Nav.Link>
         </Link>
       </Nav>
-      <Link href={data?.user ? "/" : "/login"} passHref>
-        <Button variant="outline-info">{data?.user ? "To main page" : "Log in"}</Button>
+      <Link href={data?.user ? "/logout" : "/login"} passHref>
+        <Button variant="outline-info">{data?.user ? "Log out" : "Log in"}</Button>
       </Link>
     </Navbar>
     <div className="container mainContainer">
@@ -40,7 +42,7 @@ function MyApp({ Component, pageProps }) {
         <Component {...pageProps} />
       </div>
     </div>
-    <footer className="footer"><h1>Footer</h1></footer>
+    {/* <footer className="footer bg-dark"><h1>Footer</h1></footer> */}
   </>
 }
 

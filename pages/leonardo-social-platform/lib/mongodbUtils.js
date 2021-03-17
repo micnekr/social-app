@@ -31,6 +31,8 @@ export async function connectToDatabase() {
       useUnifiedTopology: true,
       useFindAndModify: false,
       useCreateIndex: true,
+      user: process.env.MONGO_USERNAME,
+      pass: process.env.MONGO_PASSWORD,
     });
   }
   await cached.promise;

@@ -7,6 +7,8 @@ if (!cached)
     "users",
     new Schema({
       email: String,
+      username: String,
+      topics: [{ id: Number }],
     })
   );
 

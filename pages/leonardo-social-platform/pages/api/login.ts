@@ -1,5 +1,5 @@
 import { magic } from "../../lib/magic";
-import { createSession } from "../../lib/auth-cookies";
+import { createSession, getSession } from "../../lib/auth-cookies";
 import { createHandlers } from "../../lib/rest-utils";
 
 import { connectToDatabase, User } from "../../lib/mongodbUtils";
@@ -8,8 +8,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import { randomBytes } from "crypto";
 
-async function createUser(email) {
-  const user = new User({ email });
+async function createUser({ email, username }) {
+  const user = new User({ email, username, topics: [] });
   return await user.save();
 }
 
@@ -22,6 +22,8 @@ const handlers = {
   POST: async (req, res) => {
     if (!req.headers.authorization)
       return res.status(400).json({ message: "Invalid login headers" });
+    if ((await getSession(req)) !== undefined)
+      return res.status(400).json({ message: "Already signed in" });
     const didToken = magic.utils.parseAuthorizationHeader(
       req.headers.authorization
     );
@@ -31,7 +33,17 @@ const handlers = {
 
     await connectToDatabase();
     // We auto-detect signups if `getUserByEmail` resolves to `undefined`
-    const user = (await getUser(email)) || (await createUser(email));
+
+    let user = await getUser(email);
+    // signup
+    if (!user) {
+      // require a username
+      if (!req.body?.username)
+        return res
+          .status(400)
+          .json({ message: "A username is required for sign up" });
+      user = await createUser({ email, username: req.body.username });
+    }
 
     // random token
     const token = randomBytes(48).toString("base64");

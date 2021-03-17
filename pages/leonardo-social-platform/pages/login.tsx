@@ -2,7 +2,7 @@ import Head from "next/head";
 
 import LoginOrSignup from "../components/LoginOrSignup";
 
-export default function Login() {
+export default function Login({ getUserDataMutate }) {
 
     // the actual code
 
@@ -12,7 +12,7 @@ export default function Login() {
                 <title>Log in</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <LoginOrSignup />
+            <LoginOrSignup getUserDataMutate={getUserDataMutate} />
         </div>
     );
 }
