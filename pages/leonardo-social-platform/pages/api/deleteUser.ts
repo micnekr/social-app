@@ -7,7 +7,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { connectToDatabase, User } from "../../lib/mongodbUtils";
 
 const handlers = {
-  GET: async (req, res) => {
+  POST: async (req, res) => {
     const session = await getSession(req);
     if (session === undefined)
       return res.status(400).json({ message: "Not signed in" });

@@ -1,21 +1,30 @@
 version: "3.9"
 services:
   web:
-    build: ./pages/leonardo-social-platform/
-    container_name: "web"
-    ports:
-      - "3000:3000"
+      build: ./pages/leonardo-social-platform/
+      container_name: "web"
+      ports:
+        - "3000:3000"
   database:
     image: "mongo"
-    container_name: "mongo"
+    container_name: "mongo-dev"
 
-    # ports:
-    #   - "27017:27017"
+    environment: 
+      - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/db_root_username
+      - MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
+
+    ports:
+      - "27017:27017"
     volumes:
-      - ./initMongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-      - ./data/mongodb:/data/db
-  # redis:
-  #   container_name: "redis"
-  #   image: "redis:6.2.1-alpine"
-  #   # ports:
-  #   #   - "6379:6379"
+      - ../initMongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ../data/mongodb:/data/db
+    
+    secrets:
+      - db_root_username
+      - db_root_password
+
+secrets:
+  db_root_username:
+    file: ../data/mongodbAuth/user
+  db_root_password:
+    file: ../data/mongodbAuth/pwd

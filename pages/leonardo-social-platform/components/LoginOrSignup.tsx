@@ -20,10 +20,19 @@ export default function LoginOrSignup({ getUserDataMutate }) {
 
     const [isLoading, setIsLoading] = useState(false);
     const [isSignup, setIsSignup] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
+    const [showEmailNotFoundAlert, setShowEmailNotFoundAlert] = useState(false);
+    const [showUsernameUsedAlert, setShowUsernameUsedAlert] = useState(false);
 
     async function checkIfUserExists(email) {
         const userExistsResponse = await fetch(`/api/checkEmailExists?email=${email}`);
+
+        // check if there was an error
+        if (userExistsResponse.status !== 200) throw Error(`Something went wrong with the status '${userExistsResponse.status}' with this response`);
+        return (await userExistsResponse.json()).result;
+    }
+
+    async function checkIfUsernameUsed(username) {
+        const userExistsResponse = await fetch(`/api/checkUsernameExists?username=${username}`);
 
         // check if there was an error
         if (userExistsResponse.status !== 200) throw Error(`Something went wrong with the status '${userExistsResponse.status}' with this response`);
@@ -48,13 +57,20 @@ export default function LoginOrSignup({ getUserDataMutate }) {
 
                 // if just logging in, notify
                 if (!isSignup) {
-                    setShowAlert(true);
+                    setShowEmailNotFoundAlert(true);
                     setIsSignup(true);
                     return;
                 }
 
                 // only sign up if the user wants to
                 if (usernameInput === "") return;
+
+                const isUsernameUsed = await checkIfUsernameUsed(usernameInput);
+                console.log(isUsernameUsed);
+
+                setShowUsernameUsedAlert(isUsernameUsed);
+
+                if (isUsernameUsed) return;
             }
 
             // now, logging in
@@ -122,11 +138,21 @@ export default function LoginOrSignup({ getUserDataMutate }) {
                         : null
                 }
                 {
-                    showAlert ?
-                        <Alert variant="dark" className={styles.signupAlert} onClose={() => setShowAlert(false)} dismissible>
+                    showEmailNotFoundAlert ?
+                        <Alert variant="dark" className={styles.signupAlert} onClose={() => setShowEmailNotFoundAlert(false)} dismissible>
                             <Alert.Heading>We could not find that email</Alert.Heading>
                             <p>
                                 Are you trying to sign up? If so, please enter your username.
+                            </p>
+                        </Alert>
+                        : null
+                }
+                {
+                    showUsernameUsedAlert ?
+                        <Alert variant="dark" className={styles.signupAlert} onClose={() => setShowUsernameUsedAlert(false)} dismissible>
+                            <Alert.Heading>This username is already used</Alert.Heading>
+                            <p>
+                                Please choose a different username
                             </p>
                         </Alert>
                         : null
