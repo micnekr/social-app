@@ -35,6 +35,7 @@ const handlers = {
     // We auto-detect signups if `getUserByEmail` resolves to `undefined`
 
     let user = await getUser(email);
+    console.log(user);
     // signup
     if (!user) {
       // require a username

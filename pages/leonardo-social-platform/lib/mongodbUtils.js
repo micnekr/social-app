@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import User from "./models/User.ts";
+import Post from "./models/Post.ts";
 
 /**
  * Global is used here to maintain a cached connection across hot reloads
@@ -12,7 +13,7 @@ if (!cached) {
   cached = global.mongo = { conn: null, promise: null };
 }
 
-export { User };
+export { User, Post };
 
 export async function connectToDatabase() {
   if (cached.conn) {

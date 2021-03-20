@@ -6,9 +6,10 @@ if (!cached)
   cached = global.postModel = model(
     "posts",
     new Schema({
+      userId: String,
       title: String,
       description: String,
-      topics: [{ id: Number }],
+      topics: [Number],
     })
   );
 
