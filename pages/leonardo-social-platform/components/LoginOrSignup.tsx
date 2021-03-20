@@ -16,7 +16,7 @@ export default function LoginOrSignup({ getUserDataMutate }) {
 
     // state setup
     const [usernameInput, setUsernameInput] = useState("");
-    const emailInput = createRef();
+    const [emailInput, setEmailInput] = useState("");
 
     const [isLoading, setIsLoading] = useState(false);
     const [isSignup, setIsSignup] = useState(false);
@@ -45,7 +45,7 @@ export default function LoginOrSignup({ getUserDataMutate }) {
         if (isLoading) return;
 
         // get the fields
-        const email = emailInput.current.value;
+        const email = emailInput;
 
         try {
             setIsLoading(true);
@@ -123,12 +123,13 @@ export default function LoginOrSignup({ getUserDataMutate }) {
                         <Form.Control
                             required
                             type="email"
-                            ref={emailInput}
+                            value={emailInput}
+                            onChange={e => setEmailInput(e.target.value)}
                             placeholder="Enter email" />
                     </Form.Group>
                     <Button disabled={isLoading} variant="primary" type="submit">
                         Submit
-                        </Button>
+                    </Button>
                 </Form>
                 {
                     isLoading ?

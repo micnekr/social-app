@@ -4,9 +4,9 @@ services:
     image: "mongo"
     container_name: "mongo-dev"
 
-    environment: 
-      - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/db_root_username
-      - MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
+    # environment: 
+    #   - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/db_root_username
+    #   - MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
 
     ports:
       - "27017:27017"
