@@ -66,7 +66,6 @@ export default function LoginOrSignup({ getUserDataMutate }) {
                 if (usernameInput === "") return;
 
                 const isUsernameUsed = await checkIfUsernameUsed(usernameInput);
-                console.log(isUsernameUsed);
 
                 setShowUsernameUsedAlert(isUsernameUsed);
 

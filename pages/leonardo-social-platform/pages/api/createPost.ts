@@ -1,5 +1,5 @@
 import { createHandlers } from "../../lib/rest-utils";
-import { removeSession, getSession } from "../../lib/auth-cookies";
+import { getSession } from "../../lib/auth-cookies";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -26,12 +26,13 @@ const handlers = {
 
     // check that the user exists
     if (!user) return res.status(400).json({ message: "User not available" });
-    console.log(await Post.find({}));
-    console.log(await Post.deleteOne({}));
-    console.log(await Post.deleteOne({}));
 
-    const userId = user._id;
-    const post = new Post({ userId, title, description, topics: topicIds });
+    const post = new Post({
+      user: user._id,
+      title,
+      description,
+      topics: topicIds,
+    });
     await post.save();
 
     res.status(200).json({ done: true });

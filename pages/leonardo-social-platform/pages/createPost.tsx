@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Image from 'next/image'
-import { useRouter } from 'next/router'
+import Router from 'next/router'
 
 import { useUser } from "../lib/hooks";
 
@@ -36,8 +36,6 @@ export default function CreatePost({ topics }) {
     const [description, setDescription] = useState("");
 
     const [currentTopics, setCurrentTopics] = useState([]);
-
-    const router = useRouter()
 
     useUser();
 
@@ -188,9 +186,9 @@ export default function CreatePost({ topics }) {
                     </p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => router.back()}>Ok</Button>
+                    <Button onClick={() => Router.push("/")}>Ok</Button>
                 </Modal.Footer>
             </Modal>
-        </div>
+        </div >
     );
 }

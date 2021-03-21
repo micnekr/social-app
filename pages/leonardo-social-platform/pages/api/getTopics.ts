@@ -2,7 +2,7 @@ import { createHandlers } from "../../lib/rest-utils";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { connectToDatabase, User } from "../../lib/mongodbUtils";
+import { connectToDatabase } from "../../lib/mongodbUtils";
 
 const handlers = {
   GET: async (req, res) => {
