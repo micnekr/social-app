@@ -12,7 +12,7 @@ const handlers = {
     await connectToDatabase();
 
     const query = Post.find({}, { _id: 0, __v: 0 })
-      .sort({ date: -1 })
+      .sort({ _id: -1 })
       .limit(postsNum)
       .populate("user", { _id: 0, username: 1 });
 
