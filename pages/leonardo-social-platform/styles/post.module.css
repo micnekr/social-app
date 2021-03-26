@@ -8,3 +8,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.clickable {
+  color: inherit; /* blue colors from links */
+  text-decoration: inherit; /* no underline */
+}
+
+.clickable:hover {
+  color: inherit; /* blue colors from links */
+  text-decoration: inherit; /* no underline */
+}

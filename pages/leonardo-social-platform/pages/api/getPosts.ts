@@ -7,18 +7,24 @@ import { connectToDatabase, Post } from "../../lib/mongodbUtils";
 const handlers = {
   GET: async (req, res) => {
     const postsNum = parseInt(req?.query?.postsNum ?? 20); // either the set value or the default
-    console.log(postsNum);
 
     await connectToDatabase();
 
-    const query = Post.find({}, { _id: 0, __v: 0 })
+    let findObject;
+    if (req?.query?.topic) findObject = { topics: req.query.topic };
+    else findObject = {};
+
+    const query = Post.find(findObject, { _id: 0, __v: 0 })
       .sort({ _id: -1 })
       .limit(postsNum)
       .populate("user", { _id: 0, username: 1 });
 
-    const posts = await query.exec();
-
-    res.status(200).json({ posts });
+    try {
+      const posts = await query.exec();
+      return res.status(200).json({ posts });
+    } catch (error) {
+      return res.status(500).json("Could not process that request");
+    }
   },
 };
 
