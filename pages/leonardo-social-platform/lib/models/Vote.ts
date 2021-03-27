@@ -1,16 +1,13 @@
 import { Schema, model } from "mongoose";
 
-let cached = global.postModel;
+let cached = global.voteModel;
 
 if (!cached)
-  cached = global.postModel = model(
-    "posts",
+  cached = global.voteModel = model(
+    "votes",
     new Schema({
-      pubId: String,
       user: { type: Schema.Types.ObjectId, ref: "users" },
-      title: String,
-      description: String,
-      topics: [Number],
+      post: { type: Schema.Types.ObjectId, ref: "posts" },
       score: Number,
     })
   );

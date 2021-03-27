@@ -21,6 +21,7 @@ function MyApp({ Component, pageProps }) {
   const { data, mutate } = useSWR("/api/getUserData", fetcher);
 
   pageProps.getUserDataMutate = mutate;
+  pageProps.userData = data;
 
   return <>
     <Navbar bg="dark" variant="dark">

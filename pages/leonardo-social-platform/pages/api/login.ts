@@ -15,7 +15,7 @@ async function createUser({ email, username }) {
 
 async function getUser(email) {
   const user = await User.find({ email });
-  return user.length === 0 ? null : user;
+  return user.length === 0 ? null : user[0];
 }
 
 const handlers = {
@@ -48,7 +48,12 @@ const handlers = {
     // random token
     const token = randomBytes(48).toString("base64");
 
-    await createSession(res, { token, email, issuer });
+    await createSession(res, {
+      token,
+      email,
+      issuer,
+      id: user._id,
+    });
 
     res.status(200).json({ done: true });
   },

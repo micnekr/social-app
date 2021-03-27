@@ -6,17 +6,17 @@
  */
 export function createHandlers(handlers) {
   return async (req, res) => {
-    const handler = handlers[req.method]
+    const handler = handlers[req.method];
     if (handler) {
       try {
-        await handler(req, res)
+        await handler(req, res);
       } catch (err) {
         console.error(err);
-        res.status(err.status || 500).end(err.message)
+        res.status(500).end("Could not process that request");
       }
     } else {
-      res.setHeader('Allow', Object.keys(handlers))
-      res.status(405).end(`Method ${req.method} Not Allowed`)
+      res.setHeader("Allow", Object.keys(handlers));
+      res.status(405).end(`Method ${req.method} Not Allowed`);
     }
-  }
+  };
 }

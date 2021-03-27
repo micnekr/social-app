@@ -2,7 +2,11 @@ import { createHandlers } from "../../lib/rest-utils";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { connectToDatabase, Post } from "../../lib/mongodbUtils";
+import { connectToDatabase, Post, Vote } from "../../lib/mongodbUtils";
+
+async function getUserTopics(uid) {
+  return [1, 2];
+}
 
 const handlers = {
   GET: async (req, res) => {
@@ -10,21 +14,51 @@ const handlers = {
 
     await connectToDatabase();
 
+    const uid = req?.query?.uid;
+
     let findObject;
     if (req?.query?.topic) findObject = { topics: req.query.topic };
+    else if (uid) findObject = { topics: { $in: await getUserTopics(uid) } };
     else findObject = {};
 
-    const query = Post.find(findObject, { _id: 0, __v: 0 })
+    const query = Post.find(findObject, { __v: 0 })
       .sort({ _id: -1 })
       .limit(postsNum)
-      .populate("user", { _id: 0, username: 1 });
+      .populate("user", { _id: 0, username: 1 })
+      .lean();
 
-    try {
-      const posts = await query.exec();
-      return res.status(200).json({ posts });
-    } catch (error) {
-      return res.status(500).json("Could not process that request");
+    let posts = await query.exec();
+    const postIds = posts.map((post) => post._id);
+
+    const postsById = {};
+    for (let post of posts) {
+      postsById[post._id] = post;
     }
+
+    // delete the post ids
+    posts.forEach((post) => {
+      delete post._id;
+    }); // return without ids
+
+    if (uid) {
+      const votes = await Vote.find(
+        { user: uid, post: postIds },
+        { score: 1 }
+      ).populate("post", { _id: 1 });
+
+      for (let vote of votes) {
+        const postId = vote.post._id;
+        const isPositive = vote.score > 0;
+        const post = postsById[postId];
+        if (isPositive) post.isUp = true;
+        else post.isDown = true;
+      }
+    }
+
+    const responseObj = {
+      posts,
+    };
+    return res.status(200).json(responseObj);
   },
 };
 

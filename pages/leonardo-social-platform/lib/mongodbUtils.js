@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import User from "./models/User.ts";
 import Post from "./models/Post.ts";
+import Vote from "./models/Vote.ts";
 
 /**
  * Global is used here to maintain a cached connection across hot reloads
@@ -13,7 +14,7 @@ if (!cached) {
   cached = global.mongo = { conn: null, promise: null };
 }
 
-export { User, Post };
+export { User, Post, Vote };
 
 export async function connectToDatabase() {
   if (cached.conn) {

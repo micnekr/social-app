@@ -55,7 +55,6 @@ export default function CreatePost({ topics }) {
         if (topicIds.length === 0) return setTopicErrorMessage("Please, select at least one topic");
 
         const postData = { title, description, topicIds };
-        console.log(postData);
 
         const response = await fetch("/api/createPost", {
             method: "POST",
@@ -68,7 +67,6 @@ export default function CreatePost({ topics }) {
             body: JSON.stringify(postData)
         });
         const res = await response.json(); // parses JSON response into native JavaScript objects
-        console.log(res);
         if (res?.done === true) return setIsSuccessful(true);
         // else, we ran into an error
         return setTopicErrorMessage("There was an error, please try later");
@@ -77,9 +75,7 @@ export default function CreatePost({ topics }) {
     function addTopic() {
         setIsNewTopicPopupShown(false);
 
-        console.log(newTopicName);
         const newTopic = topics.find(el => el.name === newTopicName);
-        console.log(newTopic);
 
         // if not recognized, return
         if (!newTopic) return;
@@ -158,7 +154,7 @@ export default function CreatePost({ topics }) {
                     </div>
                 </div>
                 {topicErrorMessage ?
-                    <Form.Text className="text-danger">
+                    <Form.Text className="text-danger mb-2">
                         {topicErrorMessage}
                     </Form.Text>
                     : null}

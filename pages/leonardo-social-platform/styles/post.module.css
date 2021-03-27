@@ -18,3 +18,7 @@
   color: inherit; /* blue colors from links */
   text-decoration: inherit; /* no underline */
 }
+
+.likesNum {
+  text-align: center;
+}

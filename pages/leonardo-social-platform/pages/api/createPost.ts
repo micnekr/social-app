@@ -1,6 +1,8 @@
 import { createHandlers } from "../../lib/rest-utils";
 import { getSession } from "../../lib/auth-cookies";
 
+import { nanoid } from "nanoid";
+
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { connectToDatabase, User, Post } from "../../lib/mongodbUtils";
@@ -28,10 +30,12 @@ const handlers = {
     if (!user) return res.status(400).json({ message: "User not available" });
 
     const post = new Post({
+      pubId: nanoid(),
       user: user._id,
       title,
       description,
       topics: topicIds,
+      score: 0,
     });
     await post.save();
 
