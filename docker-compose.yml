@@ -1,17 +1,27 @@
+# docker-compose -f ./docker-compose.yml up --build
 version: "3.9"
 services:
   web:
-    build: ./pages/leonardo-social-platform/
+    build:
+      context: ./pages/leonardo-social-platform/
+      dockerfile: dist.Dockerfile
     container_name: "web"
     ports:
       - "3000:3000"
     depends_on:
-      - database_dev
+      - database
     environment:
-      WAIT_HOSTS: mongo:27017
+      WAIT_HOSTS: db:27017
+      WAIT_HOSTS_TIMEOUT: 120
+    restart: always
+
+    # alias db = database
+    links:
+      - "database:db"
+
   database:
     image: "mongo"
-    container_name: "mongo-dev"
+    container_name: "mongo"
 
     environment:
       - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/db_root_username
@@ -22,6 +32,9 @@ services:
     volumes:
       - ./initMongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
       - ./data/mongodb:/data/db
+
+    command: [--auth]
+    restart: always
 
     secrets:
       - db_root_username
