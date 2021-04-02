@@ -6,15 +6,15 @@ import Spinner from 'react-bootstrap/Spinner';
 
 import styles from '../styles/spinner.module.css'
 
-export default function Logout({ getUserDataMutate }) {
-    // only run on client
-    if (typeof window === "undefined") return;
+import { server } from "../lib/config";
+
+export default function Logout({ userData, getUserDataMutate }) {
+
 
     // so that it is non-blocking
-
     async function runLogOut() {
-
-        const response = await fetch("/api/logout", {
+        if (!userData?.user) return;
+        const response = await fetch(`${server}/api/logout`, {
             "method": "GET",
             "headers": {
 
@@ -35,15 +35,13 @@ export default function Logout({ getUserDataMutate }) {
 
     // the actual code
 
-    return (
-        <div className="container">
-            <Head>
-                <title>Log out</title>
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <div className="d-flex justify-content-center">
-                <Spinner className={`${styles.waitSpinner} d-flex justify-content-center`} animation="border" role="status" />
-            </div>
+    return <div className="container">
+        <Head>
+            <title>Log out</title>
+            <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <div className="d-flex justify-content-center">
+            <Spinner className={`${styles.waitSpinner} d-flex justify-content-center`} animation="border" role="status" />
         </div>
-    );
+    </div>;
 }

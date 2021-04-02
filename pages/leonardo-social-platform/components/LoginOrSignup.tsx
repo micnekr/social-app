@@ -8,8 +8,9 @@ import Alert from 'react-bootstrap/Alert';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
-import { createRef, useState } from "react";
+import { useState } from "react";
 import { useUser } from '../lib/hooks';
+import { jsonOrErrorText } from '../lib/rest-utils';
 
 export default function LoginOrSignup({ getUserDataMutate }) {
     useUser({ redirectTo: '/', redirectIfFound: true })
@@ -23,12 +24,16 @@ export default function LoginOrSignup({ getUserDataMutate }) {
     const [showEmailNotFoundAlert, setShowEmailNotFoundAlert] = useState(false);
     const [showUsernameUsedAlert, setShowUsernameUsedAlert] = useState(false);
 
+    // make sure that it is client-side
+    const magic = typeof (window) !== "undefined" ? new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY) : null;
+    magic?.preload();
+
     async function checkIfUserExists(email) {
         const userExistsResponse = await fetch(`/api/checkEmailExists?email=${email}`);
 
         // check if there was an error
         if (userExistsResponse.status !== 200) throw Error(`Something went wrong with the status '${userExistsResponse.status}' with this response`);
-        return (await userExistsResponse.json()).result;
+        return (await jsonOrErrorText(userExistsResponse)).result;
     }
 
     async function checkIfUsernameUsed(username) {
@@ -36,9 +41,8 @@ export default function LoginOrSignup({ getUserDataMutate }) {
 
         // check if there was an error
         if (userExistsResponse.status !== 200) throw Error(`Something went wrong with the status '${userExistsResponse.status}' with this response`);
-        return (await userExistsResponse.json()).result;
+        return (await jsonOrErrorText(userExistsResponse)).result;
     }
-
     async function doLogin(e) {
         e.preventDefault();
 
@@ -75,7 +79,6 @@ export default function LoginOrSignup({ getUserDataMutate }) {
             // now, logging in
             setIsSignup(false);
 
-            const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY);
             const didToken = await magic.auth.loginWithMagicLink({ email });
 
             const response = await fetch("/api/login", {

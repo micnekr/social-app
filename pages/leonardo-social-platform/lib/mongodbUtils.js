@@ -28,7 +28,7 @@ export async function connectToDatabase() {
     };
 
     // socialApp database
-    cached.promise = mongoose.connect("mongodb://localhost/socialApp", {
+    cached.promise = mongoose.connect("mongodb://db/socialApp", {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useFindAndModify: false,

@@ -6,22 +6,25 @@ import { useState } from 'react';
 import { server } from "../lib/config";
 
 import Card from 'react-bootstrap/Card';
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
 import styles from '../styles/post.module.css'
 import { getSession } from "../lib/auth-cookies";
 import VoteButton from "../components/VoteButton";
 
+import { jsonOrErrorText } from "../lib/rest-utils";
+
 export async function getServerSideProps(context) {
   const user = await getSession(context.req);
   console.log(user);
-  console.log("user")
 
   const topicsRes = await fetch(`${server}/api/getTopics`);
-  const topics = await topicsRes.json();
+  const topics = await jsonOrErrorText(topicsRes);
 
   if (context.query.topic) {
     const res = await fetch(`${server}/api/getPosts?topic=${context.query.topic}&postsNum=10`);
-    const posts = (await res.json())?.posts;
+    const posts = (await jsonOrErrorText(res))?.posts;
     return {
       props: { posts, topics }
     }
@@ -30,7 +33,7 @@ export async function getServerSideProps(context) {
   let queryString = `${server}/api/getPosts?postsNum=10&`;
   if (user) queryString += `uid=${user.id}`;
   const res = await fetch(queryString);
-  const posts = (await res.json())?.posts;
+  const posts = (await jsonOrErrorText(res))?.posts;
   return {
     props: { posts, topics }
   }
@@ -46,18 +49,20 @@ function useForceUpdate() {
 export default function Home({ posts, topics, userData }) {
   const forceUpdate = useForceUpdate();
 
+  const [needsToBeLoggedInModalShow, setNeedsToBeLoggedInModalShow] = useState(false);
+
   function voteUp(post) {
-    console.log(post)
-    console.log("voteUp");
     vote(1, post)
   }
 
   function voteDown(post) {
-    console.log("voteDown");
     vote(-1, post)
   }
 
   async function vote(score, post) {
+    console.log(userData)
+    if (!userData?.user) return setNeedsToBeLoggedInModalShow(true) // if not logged in, show the error message
+
     const postId = post.pubId;
     const response = await fetch("/api/vote", {
       method: "POST",
@@ -69,16 +74,15 @@ export default function Home({ posts, topics, userData }) {
       },
       body: JSON.stringify({ score, post: "a", postId })
     });
-    const res = await response.json();
+    const res = await jsonOrErrorText(response);
+    if (response.status !== 200) return;
     if (score > 0) post.isUp = res.wasVoteAdded; // if upvote, set upvote button
     if (score < 0) post.isDown = res.wasVoteAdded; // if downvote, set downvote button
     post.score = res.newScore;
-    console.log(post)
     forceUpdate()
   }
 
   // the actual code
-  console.log(posts);
   return (
     <div className="container">
       <Head>
@@ -129,6 +133,27 @@ export default function Home({ posts, topics, userData }) {
           }
         </div>
       </div>
+
+      {/* Needs to be logged in modal */}
+      <Modal
+        show={needsToBeLoggedInModalShow}
+        onHide={() => setNeedsToBeLoggedInModalShow(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>You are not logged in</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          You need to be logged in to vote on posts
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setNeedsToBeLoggedInModalShow(false)}>
+            Close
+          </Button>
+          <Link href="/login">
+            <Button variant="primary">Go to login page</Button>
+          </Link>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

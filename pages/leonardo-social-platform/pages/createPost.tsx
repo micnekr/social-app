@@ -13,12 +13,14 @@ import Modal from 'react-bootstrap/Modal';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import { useState } from "react";
+import { getTopics } from "./api/getTopics";
 
-import { server } from "../lib/config";
+import { jsonOrErrorText } from "../lib/rest-utils";
 
 export async function getStaticProps(context) {
-    const res = await fetch(`${server}/api/getTopics`);
-    const topics = await res.json()
+    // const res = await fetch(`${server}/api/getTopics`);
+    // const topics = await jsonOrErrorText(res)
+    const topics = await getTopics();
     return {
         props: { topics },
     }
@@ -66,7 +68,7 @@ export default function CreatePost({ topics }) {
             },
             body: JSON.stringify(postData)
         });
-        const res = await response.json(); // parses JSON response into native JavaScript objects
+        const res = await jsonOrErrorText(response); // parses JSON response into native JavaScript objects
         if (res?.done === true) return setIsSuccessful(true);
         // else, we ran into an error
         return setTopicErrorMessage("There was an error, please try later");

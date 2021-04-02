@@ -20,3 +20,14 @@ export function createHandlers(handlers) {
     }
   };
 }
+
+// client-side
+
+export async function jsonOrErrorText(res) {
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    throw new Error(text);
+  }
+}

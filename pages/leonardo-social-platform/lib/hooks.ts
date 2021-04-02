@@ -2,9 +2,11 @@ import { useEffect } from "react";
 import Router from "next/router";
 import useSWR from "swr";
 
+import { jsonOrErrorText } from "../lib/rest-utils";
+
 const fetcher = (url) =>
   fetch(url)
-    .then((r) => r.json())
+    .then((r) => jsonOrErrorText(r))
     .then((data) => {
       return { user: data?.user || null };
     });

@@ -8,10 +8,11 @@ import Button from 'react-bootstrap/Button';
 import Link from 'next/link'
 
 import useSWR from "swr";
+import { jsonOrErrorText } from "../lib/rest-utils";
 
 const fetcher = (url) =>
   fetch(url)
-    .then((r) => r.json())
+    .then((r) => jsonOrErrorText(r))
     .then((data) => {
       return { user: data?.user || null };
     });
