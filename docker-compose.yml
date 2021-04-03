@@ -6,8 +6,6 @@ services:
       context: ./pages/leonardo-social-platform/
       dockerfile: dist.Dockerfile
     container_name: "web"
-    ports:
-      - "3000:3000"
     depends_on:
       - database
     environment:
@@ -26,9 +24,6 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/db_root_username
       - MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
-
-    ports:
-      - "27017:27017"
     volumes:
       - ./initMongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
       - ./data/mongodb:/data/db
