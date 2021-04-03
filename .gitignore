@@ -3,3 +3,5 @@ initMongo.js
 
 # protect the data
 data/
+
+nginx/logs

@@ -54,6 +54,8 @@ services:
     links:
       - "web_dev:web"
 
+    restart: always
+
 secrets:
   db_root_username:
     file: ./data/mongodbAuth/user
