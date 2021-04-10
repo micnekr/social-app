@@ -1,26 +1,26 @@
 # docker-compose -f ./docker-compose.dev.yml up --build --remove-orphans
 version: "3.9"
 services:
-  web_dev:
-    build:
-      context: ./pages/leonardo-social-platform/
-      dockerfile: dev.Dockerfile
-    container_name: "web_dev"
-    ports:
-      - "3000:3000"
-    depends_on:
-      - database_dev
-    environment:
-      WAIT_HOSTS: db:27017
-      WAIT_HOSTS_TIMEOUT: 120
-    restart: always
+  # web_dev:
+  #   build:
+  #     context: ./pages/leonardo-social-platform/
+  #     dockerfile: dev.Dockerfile
+  #   container_name: "web_dev"
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - database_dev
+  #   environment:
+  #     WAIT_HOSTS: db:27017
+  #     WAIT_HOSTS_TIMEOUT: 120
+  #   restart: always
 
-    volumes:
-      - ./pages/leonardo-social-platform:/usr/src/app/
+  #   volumes:
+  #     - ./pages/leonardo-social-platform:/usr/src/app/
 
-    # alias db = database_dev
-    links:
-      - "database_dev:db"
+  #   # alias db = database_dev
+  #   links:
+  #     - "database_dev:db"
   database_dev:
     image: mongo:latest
     container_name: mongo
@@ -42,19 +42,19 @@ services:
       - db_root_username
       - db_root_password
 
-  nginx:
-    image: nginx:latest
-    container_name: dev_nginx
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/logs:/var/log/nginx
-    ports:
-      - 80:80
-      - 443:443
-    links:
-      - "web_dev:web"
+  # nginx:
+  #   image: nginx:latest
+  #   container_name: dev_nginx
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+  #     - ./nginx/logs:/var/log/nginx
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  #   links:
+  #     - "web_dev:web"
 
-    restart: always
+  #   restart: always
 
 secrets:
   db_root_username:

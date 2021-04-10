@@ -99,12 +99,12 @@ export default function Home({ posts, topics, userData }) {
                   <Link href={`/post?id=${post.pubId}`}>
                     <a className={styles.clickable}>
                       <Card.Title className={`${styles.overflowText} mb-2`}><strong>{post.title}</strong></Card.Title>
-                      <Card.Subtitle className="mb-2">By <span className={`${styles.overflowText} text-muted`}>{post.user.username}</span></Card.Subtitle>
-                      <Card.Text className={styles.overflowText}>
-                        {post.description}
-                      </Card.Text>
                     </a>
                   </Link>
+                  <Card.Subtitle className="mb-2">By <span className={`${styles.overflowText} text-muted`}>{post.user.username}</span></Card.Subtitle>
+                  <Card.Text className={styles.overflowText}>
+                    {post.description}
+                  </Card.Text>
                   <div className="container">
                     <div className="row">
                       {

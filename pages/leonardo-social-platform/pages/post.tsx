@@ -89,15 +89,13 @@ export default function Post({ post, topics, userData }) {
         <div className="row">
           <Card style={{ width: '18rem' }} className="col-10 m-2">
             <Card.Body>
-              <Link href="/post">
-                <a className={styles.clickable}>
-                  <Card.Title className={`mb-4`}><strong>{post.title}</strong></Card.Title>
-                  <Card.Subtitle className="mb-2">By <span className={`${styles.overflowText} text-muted`}>{post.user.username}</span></Card.Subtitle>
-                  <Card.Text>
-                    {post.description}
-                  </Card.Text>
-                </a>
-              </Link>
+              <a className={styles.clickable}>
+                <Card.Title className={`mb-4`}><strong>{post.title}</strong></Card.Title>
+                <Card.Subtitle className="mb-2">By <span className={`${styles.overflowText} text-muted`}>{post.user.username}</span></Card.Subtitle>
+                <Card.Text>
+                  {post.description}
+                </Card.Text>
+              </a>
               <div className="container">
                 <div className="row">
                   {
