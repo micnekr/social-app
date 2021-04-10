@@ -96,7 +96,7 @@ export default function Home({ posts, topics, userData }) {
             posts.map((post, index) => {
               return <Card key={index} style={{ width: '18rem' }} className="col-lg-3 col-12 m-2">
                 <Card.Body>
-                  <Link href="/post">
+                  <Link href={`/post?id=${post.pubId}`}>
                     <a className={styles.clickable}>
                       <Card.Title className={`${styles.overflowText} mb-2`}><strong>{post.title}</strong></Card.Title>
                       <Card.Subtitle className="mb-2">By <span className={`${styles.overflowText} text-muted`}>{post.user.username}</span></Card.Subtitle>

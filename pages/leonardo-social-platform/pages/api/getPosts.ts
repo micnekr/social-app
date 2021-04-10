@@ -5,7 +5,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { connectToDatabase, Post, Vote } from "../../lib/mongodbUtils";
 
 async function getUserTopics(uid) {
-  return [1, 2];
+  return [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13];
 }
 
 const handlers = {

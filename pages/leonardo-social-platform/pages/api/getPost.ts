@@ -4,61 +4,43 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import { connectToDatabase, Post, Vote } from "../../lib/mongodbUtils";
 
-async function getUserTopics(uid) {
-  return [1, 2];
-}
-
 const handlers = {
   GET: async (req, res) => {
-    const postsNum = parseInt(req?.query?.postsNum ?? 20); // either the set value or the default
-
     await connectToDatabase();
 
+    console.log(req.query);
+
+    const pubId = req?.query?.id;
     const uid = req?.query?.uid;
+    console.log(pubId);
+    if (!pubId) res.status(400).json({ message: "no post id specified" });
 
-    let findObject;
-    if (req?.query?.topic) findObject = { topics: req.query.topic };
-    else if (uid) findObject = { topics: { $in: await getUserTopics(uid) } };
-    else findObject = {};
+    let findObject = { pubId: pubId };
 
-    const query = Post.find(findObject, { __v: 0 })
-      .sort({ _id: -1 })
-      .limit(postsNum)
+    const query = Post.findOne(findObject, { __v: 0 })
       .populate("user", { _id: 0, username: 1 })
       .lean();
 
-    let posts = await query.exec();
-    const postIds = posts.map((post) => post._id);
+    let post = await query.exec();
+    if (!post) return res.status(404).json({ message: "no post found" });
+    const postId = post._id;
 
-    const postsById = {};
-    for (let post of posts) {
-      postsById[post._id] = post;
-    }
+    delete post._id; // return without id
 
-    // delete the post ids
-    posts.forEach((post) => {
-      delete post._id;
-    }); // return without ids
+    console.log(post);
 
     if (uid) {
       const votes = await Vote.find(
-        { user: uid, post: postIds },
+        { user: uid, post: postId },
         { score: 1 }
       ).populate("post", { _id: 1 });
-
       for (let vote of votes) {
-        const postId = vote.post._id;
         const isPositive = vote.score > 0;
-        const post = postsById[postId];
         if (isPositive) post.isUp = true;
         else post.isDown = true;
       }
     }
-
-    const responseObj = {
-      posts,
-    };
-    return res.status(200).json(responseObj);
+    return res.status(200).json(post);
   },
 };
 

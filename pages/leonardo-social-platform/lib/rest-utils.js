@@ -12,7 +12,11 @@ export function createHandlers(handlers) {
         await handler(req, res);
       } catch (err) {
         console.error(err);
-        res.status(500).end("Could not process that request");
+        res
+          .status(500)
+          .end(
+            "Could not process that request. Please contact me at 08mnekrasov@brightoncollege.net"
+          );
       }
     } else {
       res.setHeader("Allow", Object.keys(handlers));

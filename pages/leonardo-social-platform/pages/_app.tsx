@@ -27,16 +27,23 @@ function MyApp({ Component, pageProps }) {
   return <>
     <Navbar bg="dark" variant="dark">
       <Link href={"/"} passHref>
-        <Navbar.Brand>Navbar</Navbar.Brand>
+        <Navbar.Brand>Home</Navbar.Brand>
       </Link>
-      <Nav className="mr-auto">
-        <Link href={"/"} passHref>
-          <Nav.Link>Home</Nav.Link>
+      {
+        data?.user ?
+          <Nav>
+            <Link href={"/createPost"} passHref>
+              <Nav.Link>Create a post</Nav.Link>
+            </Link>
+          </Nav>
+          : null
+      }
+
+      <Nav className="ml-auto"> {/* float to the left */}
+        <Link href={data?.user ? "/logout" : "/login"} passHref>
+          <Button variant="outline-info">{data?.user ? "Log out" : "Log in"}</Button>
         </Link>
       </Nav>
-      <Link href={data?.user ? "/logout" : "/login"} passHref>
-        <Button variant="outline-info">{data?.user ? "Log out" : "Log in"}</Button>
-      </Link>
     </Navbar>
     <div className="container mainContainer">
       <div className="row">

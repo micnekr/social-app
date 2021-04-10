@@ -3,6 +3,8 @@ import User from "./models/User.ts";
 import Post from "./models/Post.ts";
 import Vote from "./models/Vote.ts";
 
+import { dbServer } from "../lib/config";
+
 /**
  * Global is used here to maintain a cached connection across hot reloads
  * in development. This prevents connections growing exponentially
@@ -28,7 +30,7 @@ export async function connectToDatabase() {
     };
 
     // socialApp database
-    cached.promise = mongoose.connect("mongodb://db/socialApp", {
+    cached.promise = mongoose.connect(`mongodb://${dbServer}/socialApp`, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useFindAndModify: false,
@@ -36,6 +38,11 @@ export async function connectToDatabase() {
       user: process.env.MONGO_USERNAME,
       pass: process.env.MONGO_PASSWORD,
     });
+
+    cached.promise.catch((err) => {
+      console.log(err);
+      cached.promise = null;
+    }); // delete on error
   }
   await cached.promise;
   cached.conn = mongoose.connection;
