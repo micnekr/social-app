@@ -8,7 +8,7 @@ export default function Signup({ getUserDataMutate }) {
     return (
         <div className="container">
             <Head>
-                <title>Log in</title>
+                <title>Sign up</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <LoginOrSignup getUserDataMutate={getUserDataMutate} />
