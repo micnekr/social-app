@@ -99,7 +99,7 @@ export default function CreatePost({ topics }) {
             <Form noValidate validated={validated} onSubmit={createLogin}>
                 <Form.Group controlId="formBasicTitle">
                     <Form.Label>Title</Form.Label>
-                    <Form.Control placeholder="Enter a title" required maxLength={100} value={title} onChange={e => setTitle(e?.target?.value)} />
+                    <Form.Control placeholder="Enter a title" maxLength={100} value={title} onChange={e => setTitle(e?.target?.value)} required />
                     <Form.Control.Feedback type="invalid">
                         Please enter a title
                     </Form.Control.Feedback>
@@ -112,7 +112,7 @@ export default function CreatePost({ topics }) {
 
                 <Form.Group controlId="formBasicDescription">
                     <Form.Label>Your description</Form.Label>
-                    <Form.Control as="textarea" rows={3} placeholder="Enter a description" maxLength={1000} value={description} onChange={e => setDescription(e?.target?.value)} />
+                    <Form.Control as="textarea" rows={3} placeholder="Enter a description" maxLength={1000} value={description} onChange={e => setDescription(e?.target?.value)} required />
                 </Form.Group>
 
                 <div className="container">

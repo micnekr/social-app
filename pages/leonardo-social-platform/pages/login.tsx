@@ -12,7 +12,7 @@ export default function Login({ getUserDataMutate }) {
                 <title>Log in</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <LoginOrSignup getUserDataMutate={getUserDataMutate} />
+            <LoginOrSignup getUserDataMutate={getUserDataMutate} isLogin />
         </div>
     );
 }

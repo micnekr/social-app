@@ -8,11 +8,12 @@ import Alert from 'react-bootstrap/Alert';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
+import Link from 'next/link'
 import { useState } from "react";
 import { useUser } from '../lib/hooks';
 import { jsonOrErrorText } from '../lib/rest-utils';
 
-export default function LoginOrSignup({ getUserDataMutate }) {
+export default function LoginOrSignup({ getUserDataMutate, isLogin }) {
     useUser({ redirectTo: '/', redirectIfFound: true })
 
     // state setup
@@ -20,7 +21,7 @@ export default function LoginOrSignup({ getUserDataMutate }) {
     const [emailInput, setEmailInput] = useState("");
 
     const [isLoading, setIsLoading] = useState(false);
-    const [isSignup, setIsSignup] = useState(false);
+    const [isSignup, setIsSignup] = useState(!isLogin);
     const [showEmailNotFoundAlert, setShowEmailNotFoundAlert] = useState(false);
     const [showUsernameUsedAlert, setShowUsernameUsedAlert] = useState(false);
 
@@ -111,15 +112,22 @@ export default function LoginOrSignup({ getUserDataMutate }) {
         <div className="row">
             <div className="col-8 mx-auto">
                 <Form onSubmit={doLogin}>
-                    <Form.Group controlId="formBasicUsername">
-                        <Form.Label>Username</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={usernameInput}
-                            onChange={e => setUsernameInput(e.target.value)}
-                            placeholder={isSignup ? "Enter your username if you want to sign up" : "This is not needed right now"}
-                            readOnly={!isSignup} />
-                    </Form.Group>
+                    {
+                        isLogin
+                            ?
+                            null
+                            :
+                            <Form.Group controlId="formBasicUsername">
+                                <Form.Label>Username</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={usernameInput}
+                                    onChange={e => setUsernameInput(e.target.value)}
+                                    placeholder="Enter your username if you want to sign up"
+                                    required
+                                />
+                            </Form.Group>
+                    }
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>Email address</Form.Label>
                         <Form.Control
@@ -141,16 +149,6 @@ export default function LoginOrSignup({ getUserDataMutate }) {
                         : null
                 }
                 {
-                    showEmailNotFoundAlert ?
-                        <Alert variant="dark" className={styles.signupAlert} onClose={() => setShowEmailNotFoundAlert(false)} dismissible>
-                            <Alert.Heading>We could not find that email</Alert.Heading>
-                            <p>
-                                Are you trying to sign up? If so, please enter your username.
-                            </p>
-                        </Alert>
-                        : null
-                }
-                {
                     showUsernameUsedAlert ?
                         <Alert variant="dark" className={styles.signupAlert} onClose={() => setShowUsernameUsedAlert(false)} dismissible>
                             <Alert.Heading>This username is already used</Alert.Heading>
@@ -160,6 +158,24 @@ export default function LoginOrSignup({ getUserDataMutate }) {
                         </Alert>
                         : null
                 }
+                {
+                    showEmailNotFoundAlert ?
+                        <Alert variant="dark" className={styles.signupAlert} onClose={() => setShowEmailNotFoundAlert(false)} dismissible>
+                            <Alert.Heading>We could not find that email</Alert.Heading>
+                            <p>
+                                Are you trying to sign up? If so, please click on the button below:
+                            </p>
+                        </Alert>
+                        : null
+                }
+            </div>
+            <div className="col-8 mx-auto mt-3">
+                <b>Or</b>
+            </div>
+            <div className="col-8 mx-auto mt-3">
+                <Link href={isLogin ? "signup" : "login"} passHref>
+                    <Button variant="outline-info">{isLogin ? "Sign up" : "Log in"}</Button>
+                </Link>
             </div>
         </div>
     );
