@@ -10,7 +10,6 @@ import { server } from "../lib/config";
 
 export default function Logout({ userData, getUserDataMutate }) {
 
-
     // so that it is non-blocking
     async function runLogOut() {
         if (!userData?.user) return Router.push("/login");
@@ -26,12 +25,13 @@ export default function Logout({ userData, getUserDataMutate }) {
         await getUserDataMutate();
         Router.push("/login");
     }
-
-    try {
-        runLogOut()
-    } catch (err) {
-        console.error(err);
-        Router.push("/login");
+    if (typeof (window) !== "undefined") {
+        try {
+            runLogOut()
+        } catch (err) {
+            console.error(err);
+            Router.push("/login");
+        }
     }
 
     // the actual code
