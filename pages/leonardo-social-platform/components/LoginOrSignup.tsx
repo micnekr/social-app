@@ -24,6 +24,7 @@ export default function LoginOrSignup({ getUserDataMutate, isLogin }) {
     const [isSignup, setIsSignup] = useState(!isLogin);
     const [showEmailNotFoundAlert, setShowEmailNotFoundAlert] = useState(false);
     const [showUsernameUsedAlert, setShowUsernameUsedAlert] = useState(false);
+    const [showEmailUsedAlert, setShowEmailUsedAlert] = useState(false);
 
     // make sure that it is client-side
     const magic = typeof (window) !== "undefined" ? new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY) : null;
@@ -56,6 +57,7 @@ export default function LoginOrSignup({ getUserDataMutate, isLogin }) {
             setIsLoading(true);
 
             const isEmailUsed = await checkIfUserExists(email);
+            console.log("is email used: ", isEmailUsed);
 
             // if it is a signup, notify
             if (!isEmailUsed) {
@@ -63,7 +65,7 @@ export default function LoginOrSignup({ getUserDataMutate, isLogin }) {
                 // if just logging in, notify
                 if (!isSignup) {
                     setShowEmailNotFoundAlert(true);
-                    setIsSignup(true);
+                    // setIsSignup(true);
                     return;
                 }
 
@@ -75,10 +77,10 @@ export default function LoginOrSignup({ getUserDataMutate, isLogin }) {
                 setShowUsernameUsedAlert(isUsernameUsed);
 
                 if (isUsernameUsed) return;
-            }
+            } else if (isSignup) return setShowEmailUsedAlert(true);
 
             // now, logging in
-            setIsSignup(false);
+            // setIsSignup(false);
 
             const didToken = await magic.auth.loginWithMagicLink({ email });
 
@@ -146,6 +148,16 @@ export default function LoginOrSignup({ getUserDataMutate, isLogin }) {
                         <Spinner className={styles.waitSpinner} animation="border" role="status">
                             <span className="sr-only">Loading...</span>
                         </Spinner>
+                        : null
+                }
+                {
+                    showEmailUsedAlert ?
+                        <Alert variant="dark" className={styles.signupAlert} onClose={() => setShowEmailUsedAlert(false)} dismissible>
+                            <Alert.Heading>This email is already used</Alert.Heading>
+                            <p>
+                                Please use a different email
+                            </p>
+                        </Alert>
                         : null
                 }
                 {

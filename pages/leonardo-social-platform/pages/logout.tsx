@@ -13,7 +13,7 @@ export default function Logout({ userData, getUserDataMutate }) {
 
     // so that it is non-blocking
     async function runLogOut() {
-        if (!userData?.user) return;
+        if (!userData?.user) return Router.push("/login");
         const response = await fetch(`${server}/api/logout`, {
             "method": "GET",
             "headers": {
@@ -28,9 +28,10 @@ export default function Logout({ userData, getUserDataMutate }) {
     }
 
     try {
-        runLogOut();
+        runLogOut()
     } catch (err) {
         console.error(err);
+        Router.push("/login");
     }
 
     // the actual code
