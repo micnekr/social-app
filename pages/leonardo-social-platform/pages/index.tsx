@@ -23,14 +23,16 @@ export async function getServerSideProps(context) {
   const topics = await jsonOrErrorText(topicsRes);
 
   if (context.query.topic) {
-    const res = await fetch(`${server}/api/getPosts?topic=${context.query.topic}&postsNum=10`);
+    let queryString = `${server}/api/getPosts?topic=${context.query.topic}&postsNum=10000&`;
+    if (user) queryString += `uid=${user.id}`;
+    const res = await fetch(queryString);
     const posts = (await jsonOrErrorText(res))?.posts;
     return {
       props: { posts, topics }
     }
   }
 
-  let queryString = `${server}/api/getPosts?postsNum=10&`;
+  let queryString = `${server}/api/getPosts?postsNum=10000&`;
   if (user) queryString += `uid=${user.id}`;
   const res = await fetch(queryString);
   const posts = (await jsonOrErrorText(res))?.posts;
