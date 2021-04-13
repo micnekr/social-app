@@ -13,7 +13,12 @@ import { useState } from "react";
 import { useUser } from '../lib/hooks';
 import { jsonOrErrorText } from '../lib/rest-utils';
 
-export default function LoginOrSignup({ getUserDataMutate, isLogin }) {
+interface LoginOrSignupProps {
+    getUserDataMutate: any,
+    isLogin?: boolean
+}
+
+export default function LoginOrSignup({ getUserDataMutate, isLogin }: LoginOrSignupProps) {
     useUser({ redirectTo: '/', redirectIfFound: true })
 
     // state setup
