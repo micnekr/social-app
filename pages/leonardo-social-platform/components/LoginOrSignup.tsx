@@ -105,6 +105,7 @@ export default function LoginOrSignup({ getUserDataMutate, isLogin }) {
         } finally {
             setIsLoading(false);
         }
+
     }
 
     // the actual code
