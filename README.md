@@ -20,5 +20,6 @@ First, you need to set up your local variables
 - Put the mongodb username and password into `data/mongodbAuth/user` and `data/mongodbAuth/pwd` 
 - Run `docker-compose -f ./docker-compose.dev.yml up --build --remove-orphans` to run the dev
 - Copy `pages/leonardo-social-platform/.env.example` to `pages/leonardo-social-platform/.env` and fill in the environmental variables. Get the `MAGIC_` keys from the [magic website](https://magic.link/). `ENCRYPTION_SECRET` needs to be a random string of characters.
+- Use `npm i` to install the other dependencies
 
 After that, run `# docker-compose -f ./docker-compose.dev.yml up --build --remove-orphans`.
