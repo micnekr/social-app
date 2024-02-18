@@ -1,7 +1,7 @@
 # Social app
 A small social media application for posting messages and voting on them.
 
-## Applications used
+## Technologies used
 - React
 - Next.js
 - Mongodb with mongoose
